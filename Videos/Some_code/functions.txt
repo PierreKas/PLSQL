@@ -1,0 +1,51 @@
+FUNCTIONS IN PLSQL
+
+1. write a function which will be allocating intake for students according to their registration date when the student gives his/her student code
+Jan - feb : first_intake
+March - April : second_intake
+May - June : third_intake
+After June:  'There is no intake for you'
+
+CREATE OR REPLACE FUNCTION allocate_intake (code VARCHAR) RETURN  VARCHAR IS
+
+reg_date students.registration_date%type;
+intake VARCHAR(15);
+BEGIN
+SELECT registration_date INTO reg_date FROM students WHERE stu_code=code;
+
+IF reg_date BETWEEN '1-JAN-2022' AND '28-FEB-2022' THEN
+intake:= 'First intake';
+ELSIF reg_date BETWEEN '1-MAR-2022' AND '30-APR-2022' THEN
+intake:= ' Second intake';
+ELSIF reg_date BETWEEN '1-MAY-2022' AND '30-JUN-2022' THEN
+intake:= ' Third intake';
+ELSE 
+dbms_output.put_line('There is no intake for you');
+END IF;
+
+RETURN intake;
+END allocate_intake;
+/
+
+
+DECLARE
+s_code students.stu_code%type:='&stu_code';
+result VARCHAR(15);
+BEGIN
+result:= allocate_intake(s_code);
+dbms_output.put_line(result);
+END;
+/
+
+
+
+
+
+
+
+
+
+
+
+
+

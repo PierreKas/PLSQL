@@ -1,0 +1,48 @@
+USER DEFINED EXCEPTION
+
+Write a PL/SQL program that prompts for an employee's code and checks whether an employee's salary
+range is not between $2500 and $5000. If the salary is in the specified range, the program should raise an
+exception saying that the salary is out of range. Otherwise, the program should print the message 'The
+bonus should be added'. Make sure that the program handles all possible exceptions
+
+create table employee (code int, e_first_name varchar(30), e_last_name varchar(30), salary float);
+INSERT INTO employee VALUES (1, 'Luc','Lukas','2000');
+INSERT INTO employee VALUES (2, 'Marc','Jude','2600');
+INSERT INTO employee VALUES (3, 'Franck','ISHARA','300');
+INSERT INTO employee VALUES (10, 'Anne','Marthe','2500');
+INSERT INTO employee VALUES (21, 'Ruth','Boaz','4000');
+
+
+
+DECLARE
+
+emp_code employee.code%type:=&code;
+emp_salary employee.salary%type;
+check_salary_range EXCEPTION;
+
+BEGIN
+SELECT code INTO emp_code  FROM employee WHERE emp_code=code;
+SELECT salary INTO emp_salary FROM employee WHERE emp_code= code;
+
+IF emp_salary NOT BETWEEN 2500 AND 5000 THEN
+
+RAISE check_salary_range;
+
+ELSE
+
+dbms_output.put_line('The bonus should be added');
+
+END IF;
+
+EXCEPTION
+WHEN check_salary_range THEN 
+dbms_output.put_line('The salary is out of range');
+WHEN no_data_found THEN 
+dbms_output.put_line('Enter the correct employee code');
+WHEN too_many_rows THEN
+dbms_output.put_line('Too many rows selected');
+WHEN others THEN 
+dbms_output.put_line('Your code has an error');
+END;
+/
+
