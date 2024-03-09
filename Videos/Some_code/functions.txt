@@ -1,6 +1,6 @@
 FUNCTIONS IN PLSQL
 
-write a function which will be allocating intake for students according to their registration date when the student gives his/her student code
+1. write a function which will be allocating intake for students according to their registration date when the student gives his/her student code
 Jan - feb : first_intake
 March - April : second_intake
 May - June : third_intake
@@ -37,39 +37,7 @@ dbms_output.put_line(result);
 END;
 /
 
-write a function which will be telling the starting date of the intake, once the student provides his/her student code:
-first_intake : 1/7/2022
-second_intake: 1/9/2022
-third_intake: 1/11/2022
 
-CREATE OR REPLACE FUNCTION start_date (code VARCHAR)  
-RETURN DATE
- IS
-start_date DATE;
-intake VARCHAR(15);
-BEGIN
-	BEGIN
-intake:= allocate_intake(code);
-IF intake = 'First intake' THEN 
-start_date := '1-JUL-2022';
-ELSIF  intake = 'Second intake' THEN 
-start_date := '1-SEP-2022';
-ELSE 
-start_date := '1-NOV-2022';
-END IF;
-	END;
-RETURN start_date;
-END start_date;
-/
-
-DECLARE 
-s_code students.stu_code%type :='&stu_code';
-result date;
-BEGIN
-result:= start_date(s_code);
-dbms_output.put_line(result);
-END;
-/
 
 
 
