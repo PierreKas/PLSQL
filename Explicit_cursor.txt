@@ -1,0 +1,74 @@
+1. EXPLICIT CURSORS USING FETCH OPERATION
+	==================
+Use an explicit cursor to print all the students in the IT department (first name, last name and registration date and address)
+
+
+DECLARE
+CURSOR cur_print_IT_students IS SELECT stu_fname, stu_lname, registration_date, stu_address FROM students
+ WHERE department_id= 2;
+
+first_name students.stu_fname%type;
+last_name students.stu_lname%type;
+reg_date students.registration_date%type;
+address students.stu_address%type;
+
+ BEGIN
+OPEN cur_print_IT_students ;
+LOOP
+FETCH cur_print_IT_students INTO first_name, last_name,reg_date,address ;
+IF cur_print_IT_students%NOTFOUND THEN
+EXIT;
+ELSE
+dbms_output.put_line(first_name||'  '||'  '||last_name||'  '||reg_date||'  '||address);
+END IF;
+END LOOP;
+CLOSE cur_print_IT_students ;
+END;
+/
+
+==============================================
+
+2. EXPLICIT CURSOR USING FOR LOOP 
+	=========
+Use an explicit cursor to print all the students in the IT department (first name, last name and registration date and address)
+
+DECLARE
+CURSOR cu__update_IT_stu IS SELECT stu_fname, stu_lname,stu_address, registration_date 
+FROM students WHERE department_id = 2;
+BEGIN
+FOR i IN cu__update_IT_stu LOOP
+dbms_output.put_line(i.stu_fname||'  '||i.stu_lname||'  '||i.stu_address||'  '||i.registration_date);
+END LOOP;
+END;
+/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
