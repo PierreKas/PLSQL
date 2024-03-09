@@ -49,49 +49,43 @@ The result must look like this if the student enters REGNO_01:
 Dear Hugo  Javes you are eligible for the Second intake, class will start on 01-SEP-22
 
 
-CREATE OR REPLACE FUNCTION intake_statirng_date (code students.stu_code%type)
-RETURN  DATE
+CREATE OR REPLACE FUNCTION assign_intake_starting_date(code students.stu_code%type) 
+RETURN DATE
 IS
 start_date DATE;
 intake VARCHAR(20);
 first_name students.stu_fname%type;
 last_name students.stu_lname%type;
-BEGIN
-SELECT stu_fname INTO first_name FROM students WHERE stu_code=code;
-SELECT stu_lname INTO last_name FROM students WHERE stu_code=code;
 
-	BEGIN
-intake:=allocate_intake(code);
-IF intake = 'First intake' THEN
+BEGIN
+SELECT stu_fname INTO first_name FROM students WHERE stu_code= code;
+SELECT stu_lname INTO last_name FROM students WHERE stu_code= code;
+
+intake:=allocate_intake (code);
+
+IF intake = 'First intake' THEN 
 start_date:= '1-JUL-2022';
-dbms_output.put_line('Dear '||first_name||' '||last_name||' you are eligible for the '||intake||', class will start on '||start_date);
+dbms_output.put_line('Dear '||first_name||' '||last_name||' you are eligible for the '||intake||',  class will start on '||start_date);
 ELSIF intake = 'Second intake' THEN
 start_date:= '1-SEP-2022';
-dbms_output.put_line('Dear '||first_name||' '||last_name||' you are eligible for the '||intake||', class will start on '||start_date);
+dbms_output.put_line('Dear '||first_name||' '||last_name||' you are eligible for the '||intake||',  class will start on '||start_date);
 ELSIF intake = 'Third intake' THEN
 start_date:= '1-NOV-2022';
-dbms_output.put_line('Dear '||first_name||' '||last_name||' you are eligible for the '||intake||', class will start on '||start_date);
+dbms_output.put_line('Dear '||first_name||' '||last_name||' you are eligible for the '||intake||',  class will start on '||start_date);
 ELSE
 dbms_output.put_line('You are not registered');
 END IF;
-	END;
-
 RETURN start_date ;
-END intake_statirng_date ;
+END assign_intake_starting_date;
 /
 
 DECLARE
-s_code VARCHAR(20):='&s_code';
-result VARCHAR(20);
+s_code varchar(20):= '&s_code';
+result DATE;
 BEGIN
-result:= intake_statirng_date(s_code);
+result:=assign_intake_starting_date(s_code);
 END;
 /
-
-
-
-
-
 
 
 
