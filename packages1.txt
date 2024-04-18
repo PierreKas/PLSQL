@@ -1,0 +1,120 @@
+PACKAGES IN PLSQL
+
+QUESTION
+========
+Write a PLSQL package that inserts a new record in the employee table.
+The package should print the number of records (employees) before the new record was added, 
+the details of the new employee record added, and the new number of employees after the record has been added 
+
+PACKAGE SPECIFICATION:
+
+CREATE OR REPLACE PACKAGE EMP_DETAILS IS
+PROCEDURE set_record (v_emp_rec IN employee%ROWTYPE);
+FUNCTION get_record (v_emp_code IN VARCHAR) RETURN employee%ROWTYPE;
+END EMP_DETAILS;
+/
+
+CREATE OR REPLACE PROCEDURE set_record (v_emp_rec IN employee%ROWTYPE)
+IS
+counter NUMBER;
+BEGIN
+SELECT COUNT(*) INTO counter FROM employee;
+dbms_output.put_line('The records was '||counter);
+INSERT INTO employee(EMP_CODE,EMP_FIRST_NAME, EMP_LAST_NAME,EMP_SALARY,EMP_ADDRESS)
+VALUES(v_emp_rec.EMP_CODE, v_emp_rec.EMP_FIRST_NAME, v_emp_rec.EMP_LAST_NAME,v_emp_rec.EMP_SALARY, v_emp_rec.EMP_ADDRESS );
+
+SELECT COUNT(*) INTO counter FROM employee;
+dbms_output.put_line('The new records are '||counter);
+END set_record;
+/
+
+
+
+DECLARE
+emp_records employee%ROWTYPE;
+
+BEGIN
+emp_records.EMP_CODE:='&EMP_CODE';
+emp_records.EMP_FIRST_NAME:='&EMP_FIRST_NAME';
+emp_records.EMP_LAST_NAME:='&EMP_LAST_NAME';
+emp_records.EMP_SALARY:='&EMP_SALARY';
+emp_records.EMP_ADDRESS:='&EMP_ADDRESS';
+
+set_record(emp_records);
+END;
+/
+--------------------------------------
+CREATE OR REPLACE FUNCTION get_record (v_emp_code IN VARCHAR) 
+RETURN employee%ROWTYPE
+AS
+employee_details employee%ROWTYPE;
+
+BEGIN
+SELECT * INTO employee_details FROM employee WHERE EMP_CODE=v_emp_code;
+dbms_output.put_line(employee_details.EMP_CODE||'  '||employee_details.EMP_FIRST_NAME||'  '||employee_details.EMP_LAST_NAME||'  '||employee_details.EMP_SALARY||'  '||employee_details.EMP_ADDRESS);
+EXCEPTION
+WHEN no_data_found THEN
+dbms_output.put_line('This employee code does not exist');
+RETURN employee_details;
+END get_record ;
+/
+
+DECLARE
+employee_code  VARCHAR(10):='&employee_code';
+results employee%ROWTYPE;
+BEGIN
+results:= get_record(employee_code);
+END;
+/
+
+=============================================
+
+CREATE OR REPLACE PACKAGE BODY EMP_DETAILS IS
+
+PROCEDURE set_record (v_emp_rec IN employee%ROWTYPE)
+IS
+counter NUMBER;
+BEGIN
+SELECT COUNT(*) INTO counter FROM employee;
+dbms_output.put_line('The records was '||counter);
+INSERT INTO employee(EMP_CODE,EMP_FIRST_NAME, EMP_LAST_NAME,EMP_SALARY,EMP_ADDRESS)
+VALUES(v_emp_rec.EMP_CODE, v_emp_rec.EMP_FIRST_NAME, v_emp_rec.EMP_LAST_NAME,v_emp_rec.EMP_SALARY, v_emp_rec.EMP_ADDRESS );
+
+SELECT COUNT(*) INTO counter FROM employee;
+dbms_output.put_line('The new records are '||counter);
+END set_record;
+
+FUNCTION get_record (v_emp_code IN VARCHAR) 
+RETURN employee%ROWTYPE
+AS
+employee_details employee%ROWTYPE;
+
+BEGIN
+SELECT * INTO employee_details FROM employee WHERE EMP_CODE=v_emp_code;
+dbms_output.put_line(employee_details.EMP_CODE||'  '||employee_details.EMP_FIRST_NAME||'  '||employee_details.EMP_LAST_NAME||'  '||employee_details.EMP_SALARY||'  '||employee_details.EMP_ADDRESS);
+EXCEPTION
+WHEN no_data_found THEN
+dbms_output.put_line('This employee code does not exist');
+RETURN employee_details;
+END get_record ;
+
+END EMP_DETAILS;
+
+
+CALLING PART:
+
+DECLARE
+emp_records employee%ROWTYPE;
+employee_code VARCHAR(10);
+employee_details employee%ROWTYPE;
+BEGIN
+emp_records.EMP_CODE:='&EMP_CODE';
+emp_records.EMP_FIRST_NAME:='&EMP_FIRST_NAME';
+emp_records.EMP_LAST_NAME:='&EMP_LAST_NAME';
+emp_records.EMP_SALARY:='&EMP_SALARY';
+emp_records.EMP_ADDRESS:='&EMP_ADDRESS';
+
+EMP_DETAILS.set_record(emp_records);
+employee_details:=EMP_DETAILS.get_record(emp_records.EMP_CODE);
+END;
+/
